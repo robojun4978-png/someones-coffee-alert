@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#123b32">
+  <meta name="description" content="썸원스커피 사장님을 위한 소상공인 지원사업 알리미">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <title>썸원스커피 지원 알리미</title>
+</head>
+<body>
+  <main class="app">
+    <header><h1>썸원스커피 사장님, 이번 주 소식이에요</h1></header>
+    <section id="list-view">
+      <nav class="tabs" aria-label="지원 종류">
+        <button class="tab active" data-tab="grant">지원사업·지원금</button>
+        <button class="tab" data-tab="loan">무이자 대출</button>
+      </nav>
+      <p id="count" class="count" aria-live="polite"></p>
+      <section id="items" class="items" aria-live="polite"></section>
+      <p id="updated" class="updated"></p>
+    </section>
+    <section id="detail-view" hidden>
+      <button id="back" class="back">← 목록으로</button>
+      <article class="detail">
+        <h2 id="d-title"></h2>
+        <p><b>지원종류</b><span id="d-kind"></span></p>
+        <p><b>마감일</b><span id="d-deadline"></span></p>
+        <p><b>지원금액</b><span id="d-amount"></span></p>
+        <p id="d-priority" class="priority" hidden>우대 대상일 수 있어요</p>
+        <p id="d-interest" class="interest" hidden>이차보전으로 실질 무이자</p>
+        <p><b>쉽게 설명하면</b></p>
+        <p id="d-summary" class="summary"></p>
+        <a id="apply" class="action" target="_blank" rel="noopener">신청하러 가기</a>
+        <a id="source" class="action secondary" target="_blank" rel="noopener">원문 보기</a>
+      </article>
+    </section>
+    <footer>정보는 참고용입니다. 신청 전 반드시 공고 원문에서 자격과 조건을 확인하세요.</footer>
+  </main>
+  <script src="./app.js"></script>
+</body>
+</html>

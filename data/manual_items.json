@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": "example-grant",
+      "type": "grant",
+      "title": "예시: 실제 공고로 교체하세요",
+      "kind": "지원금",
+      "deadline": "",
+      "amount": "원문 확인",
+      "summary": "이 항목은 화면 확인용 예시입니다. 실제 사업이 아니므로 배포 전에 삭제하세요.",
+      "url": "",
+      "applyUrl": "",
+      "region": "대전 중구",
+      "sector": "일반음식점",
+      "priority": false,
+      "verified": false
+    },
+    {
+      "id": "example-loan",
+      "type": "loan",
+      "title": "예시: 검증된 무이자 공고만 등록",
+      "kind": "무이자 대출",
+      "deadline": "",
+      "amount": "원문 확인",
+      "summary": "금리 0% 또는 이차보전으로 실제 부담금리가 0%임을 원문에서 확인한 경우에만 등록합니다.",
+      "url": "",
+      "applyUrl": "",
+      "region": "대전 중구",
+      "sector": "일반음식점",
+      "effectiveZero": false,
+      "verified": false
+    }
+  ]
+}
