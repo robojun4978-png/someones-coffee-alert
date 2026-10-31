@@ -1,0 +1,25 @@
+name: 월요일 알림
+on:
+  workflow_dispatch:
+  schedule:
+    # 월요일 08:00 KST = 일요일 23:00 UTC
+    - cron: "0 23 * * 0"
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 지원 건수 알림 발송 (ntfy 선택 사용)
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          if [ -z "$NTFY_TOPIC" ]; then
+            echo "NTFY_TOPIC 미설정: 알림 발송을 건너뜁니다."
+            exit 0
+          fi
+          GRANTS=$(python -c "import json;d=json.load(open('data/items.json'));print(sum(1 for x in d['items'] if x.get('type')=='grant'))")
+          LOANS=$(python -c "import json;d=json.load(open('data/items.json'));print(sum(1 for x in d['items'] if x.get('type')=='loan'))")
+          curl -fsS -X POST "https://ntfy.sh/$NTFY_TOPIC" \
+            -H "Title: 썸원스커피 이번 주 지원 소식" \
+            -H "Priority: high" \
+            -d "이번 주 지원사업 ${GRANTS}건, 무이자 대출 ${LOANS}건"
