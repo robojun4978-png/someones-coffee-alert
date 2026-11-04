@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""썸원스커피 맞춤형 소상공인 지원사업·정책자금 수집기 (기업마당 API + 대전·전국 핵심 상시공고 통합)"""
+"""썸원스커피 맞춤형 소상공인 지원사업·정책자금 수집기 (엄격한 업종·지역 필터 + 핵심 검증 공고)"""
 import os
 import json
 import re
@@ -39,7 +39,7 @@ CURATED_ITEMS = [
         "id": "PBLN_000000000118004",
         "type": "grant",
         "title": "[대전] 2026년 자영업닥터제 운영 (점포 환경개선·1:1 컨설팅)",
-        "kind": "경영환경 개선 (대전광역시·대전일자리경제진흥원)",
+        "kind": "점포 환경개선 (대전광역시·대전일자리경제진흥원)",
         "deadline": "예산 소진 시까지",
         "amount": "전문가 1:1 경영컨설팅 및 점포 환경개선비 지원",
         "summary": "대전 소재 소상공인·자영업자 점포에 전문 컨설턴트가 방문해 1:1 맞춤 진단을 제공하고, 컨설팅 이수 점포의 시설·경영환경 개선 비용을 지원합니다.",
@@ -54,11 +54,11 @@ CURATED_ITEMS = [
     {
         "id": "PBLN_000000000120506",
         "type": "grant",
-        "title": "[대전] 소상공인·자영업자 재기지원사업 (컨설팅·경영개선)",
+        "title": "[대전] 소상공인·자영업자 경영개선 및 재기지원 컨설팅",
         "kind": "경영개선 지원 (대전광역시·대전일자리경제진흥원)",
         "deadline": "예산 소진 시까지",
         "amount": "맞춤형 경영개선 컨설팅 및 판로·마케팅 지원",
-        "summary": "대전 지역 소상공인·자영업자를 대상으로 경영진단, 마케팅·세무 컨설팅 및 경영정상화 프로그램을 지원합니다.",
+        "summary": "대전 지역 소상공인·자영업자를 대상으로 점포 경영진단, 마케팅·세무 컨설팅 및 경영정상화 프로그램을 지원합니다.",
         "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000120506",
         "applyUrl": "https://www.djbea.or.kr/mps/bizTskPbnc?menuKey=TOfnnvp207",
         "priority": True,
@@ -73,8 +73,8 @@ CURATED_ITEMS = [
         "title": "[대전] 2026년 소상공인 온라인 판로·홍보 지원사업",
         "kind": "홍보·판로 지원 (대전광역시·대전일자리경제진흥원)",
         "deadline": "예산 소진 시까지",
-        "amount": "온라인 홍보·콘텐츠 제작·플랫폼 입점 지원",
-        "summary": "대전 지역 소상공인의 온라인 홍보, 상세페이지·홍보영상 제작, 스마트스토어 및 배달 플랫폼 판로 확대를 지원합니다.",
+        "amount": "온라인 홍보·콘텐츠 제작·배달/플랫폼 입점 지원",
+        "summary": "대전 지역 소상공인의 온라인 홍보, 상세페이지·홍보콘텐츠 제작, 스마트스토어 및 배달 플랫폼 판로 확대를 지원합니다.",
         "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000117915",
         "applyUrl": "https://www.djbea.or.kr/mps/bizTskPbnc?menuKey=TOfnnvp207",
         "priority": False,
@@ -86,7 +86,7 @@ CURATED_ITEMS = [
     {
         "id": "PBLN_000000000117737",
         "type": "grant",
-        "title": "[대전] 2026년 소상공인 인건비 지원사업 공고",
+        "title": "[대전] 2026년 소상공인 신규채용 인건비 지원사업",
         "kind": "인건비 지원 (대전광역시·대전일자리경제진흥원)",
         "deadline": "2026-11-30",
         "amount": "근로자 1인당 총 150만 원 (월 50만 원 × 3개월)",
@@ -167,10 +167,8 @@ def parse_deadline(raw_str):
     s = clean(raw_str)
     if not s:
         return "예산 소진 시까지"
-    # '2026-01-01 ~ 2026-12-31' 형태면 뒤쪽(마감일)을 기준으로 파싱
     if "~" in s:
         s = s.split("~")[-1].strip()
-    # YYYY-MM-DD, YYYY.MM.DD, YYYY년 MM월 DD일
     matches = re.findall(r"(20\d{2})[./년-]\s*(\d{1,2})[./월-]\s*(\d{1,2})", s)
     if matches:
         y, m, d = map(int, matches[-1])
@@ -178,7 +176,6 @@ def parse_deadline(raw_str):
             return date(y, m, d).isoformat()
         except ValueError:
             pass
-    # YYYYMMDD 8자리 숫자
     m8 = re.findall(r"\b(20\d{2})(\d{2})(\d{2})\b", s)
     if m8:
         y, m, d = map(int, m8[-1])
@@ -209,7 +206,7 @@ def fetch_bizinfo():
     q = urllib.parse.urlencode({"crtfcKey": BIZ_KEY, "dataType": "json", "searchCnt": "200"})
     req = urllib.request.Request(
         BIZ_URL + "?" + q,
-        headers={"User-Agent": "SomeonesCoffeeSupportAlert/1.1"},
+        headers={"User-Agent": "SomeonesCoffeeSupportAlert/1.2"},
     )
     with urllib.request.urlopen(req, timeout=25) as r:
         raw = r.read()
@@ -248,41 +245,57 @@ def classify_biz(row):
     org = get_text(row, "jrsdInsttNm", "소관부처", "excInsttNm", "수행기관")
     tags = get_text(row, "hashTags", "pldirSportRealmLclasCodeNm", "pldirSportRealmMlsfcCodeNm")
     text = " ".join([title, body, target, org, tags]).lower()
+    title_lower = title.lower()
 
-    # 명백히 해당하지 않는 업종/대상 제외
-    banned = [
-        "제조업 전용",
-        "도소매업 전용",
-        "예비창업자 전용",
-        "창업 3년 이내",
-        "창업 3년이내",
-        "법인 전용",
-        "수출기업 전용",
-        "농업인 전용",
-        "어업인 전용",
-        "청년 전용",
-    ]
-    if any(x in text for x in banned):
+    # 1. 공고 제목(title)에 반드시 실제 소상공인·자영업·외식업 키워드가 명시되어야 함
+    #    (본문/지원대상에만 '소기업', '개인사업자', '바우처'가 적힌 철도·제조·기술 공고 원천 차단)
+    title_must_have = ["소상공인", "자영업", "외식", "음식점", "카페", "커피", "골목상권", "점포"]
+    if not any(k in title_lower for k in title_must_have):
         return None
 
-    # 타 지자체 전용 공고 제외 (대전이 포함되지 않으면서 타 시도명이 제목/기관에 명시된 경우)
+    # 2. 카페(일반음식점·8년차·대전 중구)와 무관한 산업·공기업·타구·특수대상 키워드 강력 차단
+    banned_words = [
+        # 철도·인프라·공기업·중공업
+        "철도", "코레일", "열차", "역사", "수자원", "조폐", "항만", "해양", "발전소", "원자력", "건설", "건축", "토목",
+        # R&D·기술·제조·특허·IT산업
+        "r&d", "연구개발", "기술개발", "기술사업화", "시제품", "특허", "지식재산", "제조", "공장", "스마트공장",
+        "산업단지", "산단", "소공인", "인쇄", "금형", "바이오", "반도체", "로봇", "드론", "항공", "우주", "국방", "방산",
+        # 수출·무역·전시박람회·입주기업
+        "수출", "해외", "무역", "통상", "바이어", "박람회", "전시회", "입주기업", "입주모집", "보육센터", "창업보육",
+        # 벤처·창업초기·폐업·특수기업
+        "벤처", "스타트업", "예비창업", "재창업", "창업 3년", "창업3년", "창업 7년", "창업초기", "청년",
+        "사회적기업", "예비사회적기업", "협동조합", "마을기업", "장애인기업", "여성기업 전용", "법인 전용",
+        "농업", "농촌", "축산", "어업", "수산", "임업", "전통시장 상인회", "폐업", "철거",
+        # 수행기관·컨설턴트·평가위원 모집 공고 제외
+        "평가위원", "컨설턴트 모집", "수행기관 모집", "수행사 모집", "운영기관 모집", "강사 모집", "매니저 모집", "용역", "입찰",
+    ]
+    if any(w in text for w in banned_words):
+        return None
+
+    # 3. 대전 내 타 자치구(서구·유성구·대덕구·동구) 전용 공고 제외 (썸원스커피는 대전 중구 유천동)
+    other_daejeon_gu = ["서구", "유성구", "대덕구", "동구"]
+    if "중구" not in title and any(gu in title for gu in other_daejeon_gu):
+        return None
+
+    # 4. 지역 및 소관기관 엄격 제한:
+    #    (A) 대전 공고이거나, (B) 중소벤처기업부/소상공인시장진흥공단 전국 공통 공고만 허용
     other_regions = [
-        "[서울", "[부산", "[대구", "[인천", "[광주", "[울산", "[세종",
-        "[경기", "[강원", "[충북", "[충남", "[전북", "[전남", "[경북", "[경남", "[제주",
-        "서울특별시", "부산광역시", "대구광역시", "인천광역시", "광주광역시",
-        "울산광역시", "세종특별자치시", "경기도", "강원특별자치도", "충청북도",
-        "충청남도", "전북특별자치도", "전라남도", "경상북도", "경상남도", "제주특별자치도",
+        "서울", "부산", "대구", "인천", "광주", "울산", "세종",
+        "경기", "강원", "충북", "충청북도", "충남", "충청남도",
+        "전북", "전라북도", "전남", "전라남도", "경북", "경상북도",
+        "경남", "경상남도", "제주", "수원", "성남", "고양", "용인", "청주", "천안", "전주", "창원", "포항", "김해",
     ]
-    if "대전" not in text and any(r in (title + " " + org) for r in other_regions):
-        return None
-
-    # 소상공인·자영업·일반점포 관련 키워드 확인
-    elig_keywords = [
-        "소상공인", "자영업", "소기업", "음식점", "외식", "카페", "점포",
-        "골목상권", "전통시장", "개인사업자", "경영안정", "바우처", "특례보증", "이차보전",
-    ]
-    if not any(x in text for x in elig_keywords):
-        return None
+    if "대전" not in (title + " " + org):
+        # 대전 공고가 아니면 다른 지역명이 일절 없어야 하고, 중기부/소진공 공고여야 함
+        if any(r in (title + " " + org + " " + tags) for r in other_regions):
+            return None
+        if not any(a in (org + " " + body) for a in ["중소벤처기업부", "소상공인시장진흥공단", "소상공인24"]):
+            return None
+    else:
+        # 대전이더라도 타 지역과 묶인 비관련 공고이거나 대전시/중구/진행기관이 아닌 경우 확인
+        allowed_daejeon_orgs = ["대전", "중구", "일자리경제진흥원", "신용보증재단", "중소벤처기업부", "소상공인시장진흥공단"]
+        if not any(a in (org + " " + title + " " + body) for a in allowed_daejeon_orgs):
+            return None
 
     raw_period = get_text(
         row,
