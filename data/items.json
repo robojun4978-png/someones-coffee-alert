@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-04 13:31 KST",
+  "updatedAt": "2026-11-09 07:31 KST",
   "items": [
     {
       "id": "PBLN_000000000117737",
@@ -32,6 +32,22 @@
       "isNew": false,
       "verified": true,
       "source": "기업마당·소상공인24"
+    },
+    {
+      "id": "PBLN_000000000127676",
+      "type": "grant",
+      "title": "[대전] 2026년 2차 소상공인 육아휴직자 대체인력 인건비 지원사업 모집 변경 공고",
+      "kind": "지원사업·지원금 (대전광역시)",
+      "deadline": "예산 소진 시까지",
+      "amount": "공고 원문 확인",
+      "summary": "대전광역시는 소상공인 사업장에서 근무 중인 사업주 및 근로자의 임신ㆍ출산에 따른 육아휴직으로 발생하는 인력 공백을 해소하고, 대체인력 고용에 따른 인건비 부담을 완화하여 소상공인 사업장의 안정적 운영과 일ㆍ가정 양립을 지원하고자 ‘대전 소상공인 육아휴직자 대체인력 인건비 지원사업’의 참여자를 다음과 같이 공고합니다.   ",
+      "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127676",
+      "applyUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127676",
+      "priority": false,
+      "effectiveZero": false,
+      "isNew": true,
+      "verified": true,
+      "source": "대전광역시"
     },
     {
       "id": "PBLN_000000000118004",
