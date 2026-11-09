@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09 07:31 KST",
+  "updatedAt": "2026-11-09 09:49 KST",
   "items": [
     {
       "id": "PBLN_000000000117737",
@@ -45,7 +45,7 @@
       "applyUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127676",
       "priority": false,
       "effectiveZero": false,
-      "isNew": true,
+      "isNew": false,
       "verified": true,
       "source": "대전광역시"
     },
